@@ -1,6 +1,7 @@
 export class RatingWidget {
   constructor(name) {
     this.name = name;
+    this.rating = null;
     this.element = document.createElement("div");
     this.createWidget();
   }
@@ -25,14 +26,33 @@ export class RatingWidget {
         });
 
         //getting the order
-        const order = index + 1;
+        this.rating = index + 1;
         //changing the text in the text
-        textRating.textContent = order;
+        textRating.textContent = this.rating;
         //adding the styling for every star with index lower than the order
-        for (let i = 0; i < order; i++) {
+        for (let i = 0; i < this.rating; i++) {
           stars[i].classList.add("rating__star--on");
         }
+        postData(this.name, this.rating);
       });
     });
   }
 }
+
+const postData = async (name, rating) => {
+  //the url of the API
+  const url = "https://test-api.codingbootcamp.cz/api/55986825/ratings";
+  const myData = {};
+
+  myData["rating_subject"] = name;
+  myData["rating_value"] = rating;
+
+  const myResponse = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(myData),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const myUsableResponse = await myResponse.json();
+  console.log(myUsableResponse);
+};
